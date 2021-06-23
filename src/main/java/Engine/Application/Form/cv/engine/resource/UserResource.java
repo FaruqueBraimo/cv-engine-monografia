@@ -22,7 +22,7 @@ public class UserResource {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @PostMapping("/saveRole")
+    @PostMapping("/saveUser")
     public UserEntity saveRole(@RequestBody UserEntity user){
         Role role = roleRepository.findByName("ADMIN");
         user.setRole(role);
@@ -30,4 +30,18 @@ public class UserResource {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
+       public UserEntity findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+    public UserEntity findByUserNameAndPassword(String username, String password) {
+        UserEntity userEntity = findByUsername(username);
+        if (userEntity != null) {
+            if (passwordEncoder.matches(password, userEntity.getPassword())) {
+                return userEntity;
+            }
+        }
+        return null;
+    }
+    
+    
 }
