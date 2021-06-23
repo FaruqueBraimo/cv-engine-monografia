@@ -5,6 +5,10 @@
  */
 package Engine.Application.Form.cv.engine.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -12,11 +16,12 @@ import java.util.UUID;
  *
  * @author faruq
  */
-
+@Entity
 public class Candidate {
 
-    
-    private Long candidateId ;
+    @Id
+    @GeneratedValue
+    private UUID candidateId ;
     private String name;
     private String last_name;
     private LocalDate birth_date;
@@ -24,7 +29,7 @@ public class Candidate {
     private String self_descrition;
     private String user_id;
 
-    public Candidate(Long candidateId, String name, String last_name, LocalDate birth_date, String nacionality, String self_descrition, String user_id) {
+    public Candidate(UUID candidateId, String name, String last_name, LocalDate birth_date, String nacionality, String self_descrition, String user_id) {
         this.candidateId = candidateId;
         this.name = name;
         this.last_name = last_name;
@@ -32,6 +37,10 @@ public class Candidate {
         this.nacionality = nacionality;
         this.self_descrition = self_descrition;
         this.user_id = user_id;
+    }
+
+    public Candidate() {
+
     }
 
     /**
@@ -123,14 +132,13 @@ public class Candidate {
     /**
      * @return the id
      */
-    public Long getCandidateId() {
+    public UUID getCandidateId() {
         return candidateId;
     }
 
     /**
-     * @param id the id to set
      */
-    public void setCandidateId(Long candidateId) {
+    public void setCandidateId(UUID candidateId) {
         this.candidateId = candidateId;
     }
 
