@@ -1,30 +1,23 @@
 package Engine.Application.Form.cv.engine.model;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.UUID;
 
+
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID roleId;
     @Column
     private String name;
 
-    public UUID getRoleId() {
-        return roleId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setRoleId(UUID roleId) {
-        this.roleId = roleId;
-    }
 }

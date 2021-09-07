@@ -72,6 +72,67 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>3.18.1</version>
+		</dependency>
+
+		<!-- Algolia library with Apache HTTP requester (compatible with Java 8 and above) -->
+		<dependency>
+			<groupId>com.algolia</groupId>
+			<artifactId>algoliasearch-core</artifactId>
+			<version>3.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.algolia</groupId>
+			<artifactId>algoliasearch-apache</artifactId>
+			<version>3.10.0</version>
+		</dependency>
+
+		<!-- Algolia library with JDK 11 native HTTP client (compatible with Java 11 and above) -->
+		<dependency>
+			<groupId>com.algolia</groupId>
+			<artifactId>algoliasearch-core</artifactId>
+			<version>3.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.algolia</groupId>
+			<artifactId>algoliasearch-java-net</artifactId>
+			<version>3.10.0</version>
+		</dependency>
+
+		<!-- Algolia library with Apache HTTP requester bundled as a single uber JAR (compatible with Java 8 and above) -->
+		<dependency>
+			<groupId>com.algolia</groupId>
+			<artifactId>algoliasearch-apache-uber</artifactId>
+			<version>3.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.opennlp</groupId>
+			<artifactId>opennlp-tools</artifactId>
+			<version>1.9.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.opennlp</groupId>
+			<artifactId>opennlp-uima</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>0.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-parsers</artifactId>
+			<version>0.7</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

@@ -2,46 +2,55 @@ package Engine.Application.Form.cv.engine.resource;
 
 
 import Engine.Application.Form.cv.engine.model.Role;
+import Engine.Application.Form.cv.engine.model.RoleToUser;
 import Engine.Application.Form.cv.engine.model.UserEntity;
 import Engine.Application.Form.cv.engine.reporitory.RoleRepository;
 import Engine.Application.Form.cv.engine.reporitory.UserRepository;
+import Engine.Application.Form.cv.engine.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "api")
+@RequiredArgsConstructor
 @CrossOrigin("*")
 public class UserResource {
 
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoleRepository roleRepository;
+    private final UserService userService;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    @GetMapping("/users")
+    public ResponseEntity<List<UserEntity>> getUsers() {
+        return  ResponseEntity.ok().body(userService.getUsers());
+    }
 
-    @PostMapping("/saveUser")
-    public UserEntity saveRole(@RequestBody UserEntity user){
-        Role role = roleRepository.findByName("ADMIN");
-        user.setRole(role);
-        user.setUsername(user.getUsername());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+    @PostMapping("/user/save")
+    public  ResponseEntity<UserEntity> saveUser( @RequestBody UserEntity userEntity ){
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
+        return  ResponseEntity.created(uri).body(userService.saveUser(userEntity));
     }
-       public UserEntity findByUsername(String username) {
-        return userRepository.findByUsername(username);
+
+    @PostMapping("/role/save")
+    public  ResponseEntity<Role> saveRole( @RequestBody Role role ){
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
+
+        return  ResponseEntity.created(uri).body(userService.saveRole(role));
     }
-    public UserEntity findByUserNameAndPassword(String username, String password) {
-        UserEntity userEntity = findByUsername(username);
-        if (userEntity != null) {
-            if (passwordEncoder.matches(password, userEntity.getPassword())) {
-                return userEntity;
-            }
-        }
-        return null;
+
+
+    @PostMapping("/role/adduser")
+    public  ResponseEntity<?> addRoleToUser( @RequestBody RoleToUser roleToUser ){
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
+        userService.addRoleToUser(roleToUser.getRole(), roleToUser.getUsername());
+        return  ResponseEntity.ok().build();
     }
-    
+
+
     
 }
