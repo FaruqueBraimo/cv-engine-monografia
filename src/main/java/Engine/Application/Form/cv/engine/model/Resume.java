@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -14,9 +15,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Resume {
 
-    @GeneratedValue
-    @Nullable
-    private String  name;
+    private String id;
+    private String name;
     private String path;
     private String content;
     private String language;
