@@ -96,12 +96,6 @@ public class ResumeDatabase {
 
     }
 
-    public static void main(String[] args) throws IOException {
-        //createDirectory("desenvolvedor-java-junior");
-       // System.out.println(loadResume("desenvolvedor-java-junior"));
-
-
-    }
 
 
 }
