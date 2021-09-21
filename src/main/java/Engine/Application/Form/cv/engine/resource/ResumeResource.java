@@ -3,8 +3,10 @@ package Engine.Application.Form.cv.engine.resource;
 
 import Engine.Application.Form.cv.engine.message.ResponseMessage;
 import Engine.Application.Form.cv.engine.model.Resume;
+import Engine.Application.Form.cv.engine.service.ElasticResumeService;
 import Engine.Application.Form.cv.engine.service.ResumeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -29,13 +31,21 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "api")
 @CrossOrigin("*")
+@Slf4j
 @RequiredArgsConstructor
 public class ResumeResource {
 
     private final ResumeService resumeService;
+    private final ElasticResumeService elasticResumeService;
 
     @GetMapping("/resumes/{job}")
     public ResponseEntity<List<Resume>> getUsers(@PathVariable String job) throws IOException {
+       // elasticResumeService.saveResume(resumeService.getResumeByJob(job).get(2));
+        List<Resume> resumesList = resumeService.getResumeByJob(job);
+//        resumesList.stream().forEach(e ->
+//                elasticResumeService.saveResume(e)
+//        );
+
         return ResponseEntity.ok().body(resumeService.getResumeByJob(job));
     }
 

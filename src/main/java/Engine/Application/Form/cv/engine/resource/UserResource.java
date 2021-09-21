@@ -6,6 +6,7 @@ import Engine.Application.Form.cv.engine.model.RoleToUser;
 import Engine.Application.Form.cv.engine.model.UserEntity;
 import Engine.Application.Form.cv.engine.reporitory.RoleRepository;
 import Engine.Application.Form.cv.engine.reporitory.UserRepository;
+import Engine.Application.Form.cv.engine.service.ElasticResumeService;
 import Engine.Application.Form.cv.engine.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
