@@ -29,6 +29,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -68,34 +70,21 @@ public class ResumeDatabase {
                         LanguageIdentifier language = new LanguageIdentifier(content);
                         String token_content = "";
 
-                        // MetaData of Documents
-                        Path filePath = Paths.get(e.toAbsolutePath().toString());
-
-                        BasicFileAttributes attr =
-                                Files.readAttributes(filePath, BasicFileAttributes.class);
-
-                        TimeZone utc = TimeZone.getTimeZone("UTC");
-                        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                        SimpleDateFormat destFormat = new SimpleDateFormat("yyyy/MM/dd");
-                        System.out.println(attr.creationTime());
-                        sourceFormat.setTimeZone(utc);
-                        Date convertedDate = sourceFormat.parse(attr.creationTime().toString());
-
-
-
-                        for (String token : getResumeTokens(removeStopWords(content, language.getLanguage()))) {
+                       for (String token : getResumeTokens(removeStopWords(content, language.getLanguage()))) {
                             token_content += token + " ";
                         }
                         resumes.add(new Resume(String.valueOf(count.getAndIncrement()), e.getFileName().toString(),
-                                e.toAbsolutePath().toString(), token_content, language.getLanguage(), pagesNumber,destFormat.format(convertedDate)));
+                                e.toAbsolutePath().toString(), token_content, language.getLanguage(), pagesNumber,  getmetadata(file)));
 
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
 
-                    } catch (ParseException parseException) {
-                        parseException.printStackTrace();
                     } catch (TikaException tikaException) {
                         tikaException.printStackTrace();
+                    } catch (ParseException parseException) {
+                        parseException.printStackTrace();
+                    } catch (SAXException saxException) {
+                        saxException.printStackTrace();
                     }
 
 
@@ -110,18 +99,21 @@ public class ResumeDatabase {
 
     }
 
-    public String getmetadata(String fileName) throws IOException, ParseException {
+    public Date getmetadata(File file) throws IOException, ParseException, TikaException, SAXException {
 
-        Path file = Paths.get(fileName);
-        BasicFileAttributes attr =
-                Files.readAttributes(file, BasicFileAttributes.class);
-
-        TimeZone utc = TimeZone.getTimeZone("UTC");
-        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        SimpleDateFormat destFormat = new SimpleDateFormat("yyyy/MM/dd");
-        sourceFormat.setTimeZone(utc);
-        Date convertedDate = sourceFormat.parse(attr.creationTime().toString());
-        return destFormat.format(convertedDate);
+        Parser parser = new AutoDetectParser();
+        BodyContentHandler handler = new BodyContentHandler();
+        Metadata metadata = new Metadata();
+        FileInputStream inputstream = new FileInputStream(file);
+        ParseContext context = new ParseContext();
+        parser.parse(inputstream, handler, metadata, context);
+        String input =metadata.get("created");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "EEE MMM d HH:mm:ss zzz yyyy" , Locale.ENGLISH );
+        ZonedDateTime zdt = formatter.parse ( input , ZonedDateTime:: from );
+        java.util.Date date = java.util.Date.from( zdt.toInstant() );
+        DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = df3.format(date);
+        return date;
 
     }
 

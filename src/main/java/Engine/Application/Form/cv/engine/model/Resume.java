@@ -34,7 +34,7 @@ public class Resume {
 
     @Field(type = FieldType.Integer)
     private int pages;
-    @Field(type = FieldType.Text)
-    private String createdAt;
+    @Field(type = FieldType.Date)
+    private Date createdAt;
 
 }

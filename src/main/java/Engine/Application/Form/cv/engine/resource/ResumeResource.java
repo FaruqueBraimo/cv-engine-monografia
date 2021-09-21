@@ -42,9 +42,9 @@ public class ResumeResource {
     public ResponseEntity<List<Resume>> getUsers(@PathVariable String job) throws IOException {
        // elasticResumeService.saveResume(resumeService.getResumeByJob(job).get(2));
         List<Resume> resumesList = resumeService.getResumeByJob(job);
-//        resumesList.stream().forEach(e ->
-//                elasticResumeService.saveResume(e)
-//        );
+        resumesList.stream().forEach(e ->
+                elasticResumeService.saveResume(e)
+        );
 
         return ResponseEntity.ok().body(resumeService.getResumeByJob(job));
     }
