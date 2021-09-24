@@ -73,8 +73,9 @@ public class ResumeDatabase {
                        for (String token : getResumeTokens(removeStopWords(content, language.getLanguage()))) {
                             token_content += token + " ";
                         }
+
                         resumes.add(new Resume(String.valueOf(count.getAndIncrement()), e.getFileName().toString(),
-                                e.toAbsolutePath().toString(), token_content, language.getLanguage(), pagesNumber,  getmetadata(file)));
+                                e.toAbsolutePath().toString(), token_content, getLanguageName(language.getLanguage()) , pagesNumber,  getmetadata(file)));
 
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
@@ -97,6 +98,16 @@ public class ResumeDatabase {
         Path path = Paths.get(currentWorkingDir.normalize().toString() + "/resumes/" + dirName);
         Files.createDirectories(path);
 
+    }
+
+    public String getLanguageName(String languageCode) {
+        Map<String, String> language_identifier = new HashMap<>();
+        language_identifier.put("pt", "Português");
+        language_identifier.put("en", "Inglês");
+        language_identifier.put("fr", "Francês");
+        language_identifier.put("gen", "Alemão");
+
+        return language_identifier.get(languageCode);
     }
 
     public Date getmetadata(File file) throws IOException, ParseException, TikaException, SAXException {
