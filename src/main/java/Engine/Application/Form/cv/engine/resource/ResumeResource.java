@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
@@ -40,30 +41,33 @@ public class ResumeResource {
 
     @GetMapping("/resumes/{job}")
     public ResponseEntity<List<Resume>> getUsers(@PathVariable String job) throws IOException {
-       // elasticResumeService.saveResume(resumeService.getResumeByJob(job).get(2));
-        List<Resume> resumesList = resumeService.getResumeByJob(job);
-//        resumesList.stream().forEach(e ->
-//                elasticResumeService.saveResume(e)
-//        );
+         List<Resume> resumesList = resumeService.getResumeByJob(job);
 
-        return ResponseEntity.ok().body(resumeService.getResumeByJob(job));
+            resumesList.stream().forEach(e ->
+                    elasticResumeService.saveResume(e)
+            );
+
+
+        return ResponseEntity.ok().body(resumesList);
     }
 
     @PostMapping("/resumes/upload")
-    public ResponseEntity<ResponseMessage> uploadFiles(@RequestParam("files") MultipartFile[] files) {
+    public ResponseEntity<ResponseMessage> uploadFiles(@RequestParam("files") MultipartFile[] files ) {
         String message = "";
+        String job = UUID.randomUUID().toString();
         try {
             List<String> fileNames = new ArrayList<>();
 
             Arrays.asList(files).stream().forEach(file -> {
-                resumeService.saveResumes(file, "desenvolvedor-java-junior");
+                resumeService.saveResumes(file, job);
                 fileNames.add(file.getOriginalFilename());
             });
 
             message = "Houve sucesso no carregado de" + fileNames;
+
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
         } catch (Exception e) {
-            message = "Falha ao carregar!";
+            message = e.getMessage();
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
         }
     }
@@ -72,7 +76,7 @@ public class ResumeResource {
     @GetMapping("/openResume/{jobFolder}/{resumeName}")
     public ResponseEntity<InputStreamResource> getTermsConditions(@PathVariable String jobFolder, @PathVariable String resumeName) throws FileNotFoundException {
         Path currentWorkingDir = Paths.get("").toAbsolutePath();
-        Path root = Paths.get(currentWorkingDir.normalize().toString() + "/resumes/" + jobFolder + "/" + resumeName);
+        Path root = Paths.get(currentWorkingDir.normalize().toString() + "/resumes/" + jobFolder + "/" + resumeName + ".pdf");
         File file = new File(root.toAbsolutePath().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.add("content-disposition", "inline;filename=" + file.getName());

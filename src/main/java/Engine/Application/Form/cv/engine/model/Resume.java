@@ -31,10 +31,10 @@ public class Resume {
     private String content;
     @Field(type = FieldType.Text)
     private String language;
-
     @Field(type = FieldType.Integer)
     private int pages;
     @Field(type = FieldType.Date)
     private Date createdAt;
-
+    @Field(type = FieldType.Text)
+    private String job;
 }

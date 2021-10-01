@@ -17,10 +17,10 @@ public class Job {
     @GeneratedValue
     private UUID jobId;
     private String title;
-    private String JobType;
-    private String salary;
     private String description;
     private String JobStatus;
+    private String JobType;
+    private String salary;
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonBackReference
     private Category category;

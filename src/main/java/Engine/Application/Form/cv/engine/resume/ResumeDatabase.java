@@ -1,11 +1,9 @@
 package Engine.Application.Form.cv.engine.resume;
-
 import Engine.Application.Form.cv.engine.model.Resume;
-import Engine.Application.Form.cv.engine.service.ElasticResumeServiceImpl;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.metadata.Metadata;
 import com.itextpdf.text.pdf.PdfReader;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
 import org.apache.tika.Tika;
@@ -15,20 +13,14 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
-import org.joda.time.LocalDate;
 import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -46,8 +38,8 @@ public class ResumeDatabase {
     static Path path;
 
 
-    public List<Resume> loadResume(String dirName) throws IOException {
-        path = Paths.get(currentWorkingDir.normalize().toString() + "/resumes/" + dirName + "/");
+    public List<Resume> loadResume(String job) throws IOException {
+        path = Paths.get(currentWorkingDir.normalize().toString() + "/resumes/" + job + "/");
         Stream<Path> paths = Files.walk(path);
         List<Resume> resumes = new ArrayList<Resume>();
         List<Path> result;
@@ -67,15 +59,28 @@ public class ResumeDatabase {
                         // Detect Language
 
                         String content = new Tika().parseToString(file);
+
+
+                        String target = Arrays.asList(content.split(" "))
+                                .stream()
+                                .filter(word -> !word.contains("http"))
+                                .filter(word ->   !word.contains("www"))
+                                .map(word -> word + " ")
+                                .collect(Collectors.joining());
+
+
                         LanguageIdentifier language = new LanguageIdentifier(content);
                         String token_content = "";
 
-                       for (String token : getResumeTokens(removeStopWords(content, language.getLanguage()))) {
-                            token_content += token + " ";
+
+                        for (String token : getResumeTokens(removeStopWords(target, language.getLanguage()))) {
+
+                            String pattern = "[● \uF0B7 ^ _  * \uF03E]*";
+                            token_content += token.replaceAll("g[0-9].*?\\b", "").replaceAll(pattern, "") + " ";
                         }
 
-                        resumes.add(new Resume(String.valueOf(count.getAndIncrement()), e.getFileName().toString(),
-                                e.toAbsolutePath().toString(), token_content, getLanguageName(language.getLanguage()) , pagesNumber,  getmetadata(file)));
+                        resumes.add(new Resume(String.valueOf(count.getAndIncrement()), FilenameUtils.removeExtension(e.getFileName().toString()),
+                                e.toAbsolutePath().toString(), token_content, getLanguageName(language.getLanguage()), pagesNumber, getmetadata(file), job));
 
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
@@ -101,13 +106,22 @@ public class ResumeDatabase {
     }
 
     public String getLanguageName(String languageCode) {
+        String language = "Desconhecido";
+
         Map<String, String> language_identifier = new HashMap<>();
         language_identifier.put("pt", "Português");
         language_identifier.put("en", "Inglês");
         language_identifier.put("fr", "Francês");
         language_identifier.put("gen", "Alemão");
+        language_identifier.put("es", "Espanhol");
+        language_identifier.put("it", "Italiano");
 
-        return language_identifier.get(languageCode);
+        if (language_identifier.get(languageCode) != null) {
+            language = language_identifier.get(languageCode);
+        }
+
+        return language;
+
     }
 
     public Date getmetadata(File file) throws IOException, ParseException, TikaException, SAXException {
@@ -118,18 +132,21 @@ public class ResumeDatabase {
         FileInputStream inputstream = new FileInputStream(file);
         ParseContext context = new ParseContext();
         parser.parse(inputstream, handler, metadata, context);
-        String input =metadata.get("created");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "EEE MMM d HH:mm:ss zzz yyyy" , Locale.ENGLISH );
-        ZonedDateTime zdt = formatter.parse ( input , ZonedDateTime:: from );
-        java.util.Date date = java.util.Date.from( zdt.toInstant() );
-        DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd");
-        String strDate = df3.format(date);
+        String input = metadata.get("created");
+        Date date = new Date();
+        if (input != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss zzz yyyy", Locale.ENGLISH);
+            ZonedDateTime zdt = formatter.parse(input, ZonedDateTime::from);
+            date = Date.from(zdt.toInstant());
+        }
+
         return date;
 
     }
 
 
     public String[] getResumeTokens(String resumeWithoutStopWords) {
+
         WhitespaceTokenizer tokenizer = WhitespaceTokenizer.INSTANCE;
         String tokens[] = tokenizer.tokenize(resumeWithoutStopWords);
         return tokens;

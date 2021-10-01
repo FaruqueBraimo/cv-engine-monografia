@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -32,21 +33,38 @@ public class ResumeService {
     ;
 
     public void saveResumes(MultipartFile file, String job_folder) {
+        String uploadedFolder = System.getProperty("user.dir");
+
+        if (uploadedFolder != null && !uploadedFolder.isEmpty()) {
+            uploadedFolder += "/resumes/" + job_folder + "/";
+        } else
+            throw new RuntimeException("Ocorreu um erro ao carregar os ficheiros, por favor reporte este para suporte.");
+
+        byte[] bytes = null;
         try {
-            Path root = Paths.get(currentWorkingDir.normalize().toString() + "/resumes/" + job_folder + "/");
-            Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()));
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao carregar Cvs: " + e.getMessage());
+            bytes = file.getBytes();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception.getMessage());
         }
+        Path path = null;
+        try {
+            path = Paths.get(uploadedFolder + file.getOriginalFilename());
+            if (!Files.exists(path.getParent()))
+                Files.createDirectories(path.getParent());
+                Files.write(path, bytes);
+
+
+
+        } catch (IOException exception) {
+            throw new RuntimeException(exception.getMessage());
+
+        }
+
     }
 
     public List<Resume> getResumeByJob(String job) throws IOException {
-
-
         return resumeDatabase.loadResume(job);
-
     }
-
 
     public File getResumeFile(String resumeName, String job_folder) {
 
@@ -80,7 +98,7 @@ public class ResumeService {
     }
 
 
-    public  void locateFile(String job_folder, String  resumeName) throws URISyntaxException, IOException {
+    public void locateFile(String job_folder, String resumeName) throws URISyntaxException, IOException {
         Path root = Paths.get(currentWorkingDir.normalize().toString() + "/resumes/" + job_folder + "/" + resumeName);
         File file = new File(root.toAbsolutePath().toString());
 
