@@ -39,17 +39,6 @@ public class ResumeResource {
     private final ResumeService resumeService;
     private final ElasticResumeService elasticResumeService;
 
-    @GetMapping("/resumes/{job}")
-    public ResponseEntity<List<Resume>> getUsers(@PathVariable String job) throws IOException {
-         List<Resume> resumesList = resumeService.getResumeByJob(job);
-
-            resumesList.stream().forEach(e ->
-                    elasticResumeService.saveResume(e)
-            );
-
-
-        return ResponseEntity.ok().body(resumesList);
-    }
 
     @PostMapping("/resumes/upload")
     public ResponseEntity<ResponseMessage> uploadFiles(@RequestParam("files") MultipartFile[] files ) {
@@ -89,10 +78,5 @@ public class ResumeResource {
                 .body(resource);
     }
 
-    @GetMapping("/locateResume/{jobFolder}/{resumeName}")
-    public ResponseEntity<String> locateFile(@PathVariable String jobFolder, @PathVariable String resumeName) throws URISyntaxException, IOException {
-        resumeService.locateFile(jobFolder, resumeName);
-        return new ResponseEntity<>("Localizado!", HttpStatus.OK);
 
-    }
 }

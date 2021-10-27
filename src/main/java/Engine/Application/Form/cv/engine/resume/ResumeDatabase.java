@@ -1,4 +1,5 @@
 package Engine.Application.Form.cv.engine.resume;
+
 import Engine.Application.Form.cv.engine.model.Resume;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.metadata.Metadata;
@@ -13,7 +14,9 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,6 +28,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +41,61 @@ public class ResumeDatabase {
     File file;
     static Path currentWorkingDir = Paths.get("").toAbsolutePath();
     static Path path;
+
+
+    public List<Resume> IndexFiles(MultipartFile multipartFile, String job) throws IOException {
+        path = Paths.get(currentWorkingDir.normalize().toString() + "/resumes/" + job + "/" + multipartFile.getOriginalFilename());
+        List<Resume> resumes = new ArrayList<Resume>();
+
+
+        try {
+            File file = new File(path.toString());
+            multipartFile.transferTo(file);
+
+            //Count Number pages
+            PdfReader document = new PdfReader(new FileInputStream(file));
+            int pagesNumber = document.getNumberOfPages();
+
+            // Detect Language
+
+            String content = new Tika().parseToString(file);
+
+
+            String target = Arrays.asList(content.split(" "))
+                    .stream()
+                    .filter(word -> !word.contains("http"))
+                    .filter(word -> !word.contains("www"))
+                    .map(word -> word + " ")
+                    .collect(Collectors.joining());
+
+
+            LanguageIdentifier language = new LanguageIdentifier(content);
+            String token_content = "";
+
+
+            for (String token : getResumeTokens(removeStopWords(target, language.getLanguage()))) {
+
+                String pattern = "[● \uF0B7 ^ _  * \uF03E]*";
+                token_content += token.replaceAll("g[0-9].*?\\b", "").replaceAll(pattern, "") + " ";
+            }
+
+            resumes.add(new Resume(UUID.randomUUID().toString(), FilenameUtils.removeExtension(file.getName().toString()),
+                    file.getAbsolutePath(), token_content, getLanguageName(language.getLanguage()), pagesNumber, getmetadata(file), job));
+
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+
+        } catch (TikaException tikaException) {
+            tikaException.printStackTrace();
+        } catch (ParseException parseException) {
+            parseException.printStackTrace();
+        } catch (SAXException saxException) {
+            saxException.printStackTrace();
+        }
+
+
+        return resumes;
+    }
 
 
     public List<Resume> loadResume(String job) throws IOException {
@@ -64,7 +124,7 @@ public class ResumeDatabase {
                         String target = Arrays.asList(content.split(" "))
                                 .stream()
                                 .filter(word -> !word.contains("http"))
-                                .filter(word ->   !word.contains("www"))
+                                .filter(word -> !word.contains("www"))
                                 .map(word -> word + " ")
                                 .collect(Collectors.joining());
 
@@ -174,7 +234,19 @@ public class ResumeDatabase {
 
     }
 
+    public static void main(String[] args) {
+        String eduation = "Licenciatura no Institute Superior";
+        String patternToMatch = "(Institute|Instituto)\\s " ;
+       //String patternToMatch = "/([A-Z][^\\s,.]+[.]?\\s[(]?)*(College|University|Institute|Law School|School of|Academy|Instituto|Universidade|Escola)[^,\\d]*(?=,|\\d)/";
 
+        Pattern pattern = Pattern.compile(patternToMatch);
+
+        Matcher matcher = pattern.matcher(eduation);
+        while(matcher.find()) {
+            System.out.println("found: " + matcher.group());
+        }
+
+    }
 
 
 }
