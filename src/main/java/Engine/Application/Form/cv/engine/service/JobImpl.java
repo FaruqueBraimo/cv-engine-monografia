@@ -27,7 +27,7 @@ public class JobImpl implements  JobService{
 
     @Override
     public Job findById(String id) {
-        return null;
+        return jobRepository.findByJobId(id);
     }
 
     @Override

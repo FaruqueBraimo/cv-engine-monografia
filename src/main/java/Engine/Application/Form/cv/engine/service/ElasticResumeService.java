@@ -7,4 +7,5 @@ public interface ElasticResumeService {
     public Resume saveResume(Resume resume) ;
     public Resume findById(String id) ;
     Iterable<Resume> findAll();
+    public  Long countResumeByJob(String job);
 }

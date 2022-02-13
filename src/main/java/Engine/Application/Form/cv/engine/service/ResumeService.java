@@ -225,6 +225,9 @@ public class ResumeService {
 
     }
 
+    public Long countResumeByJob(String job) {
+     return   elasticResumeService.countResumeByJob(job);
+    }
 
     public Iterable<Resume> getResume() {
         return  elasticResumeService.findAll();

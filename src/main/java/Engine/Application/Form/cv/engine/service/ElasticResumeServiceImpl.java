@@ -25,4 +25,9 @@ public class ElasticResumeServiceImpl implements ElasticResumeService {
         return resumeRepository.findAll();
     }
 
+    @Override
+    public Long countResumeByJob(String job) {
+       return resumeRepository.countByJob(job);
+    }
+
 }
