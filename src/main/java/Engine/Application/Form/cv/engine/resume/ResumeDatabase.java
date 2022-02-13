@@ -236,8 +236,8 @@ public class ResumeDatabase {
 
     public static void main(String[] args) {
         String eduation = "Licenciatura no Institute Superior";
-        String patternToMatch = "(Institute|Instituto)\\s " ;
-       //String patternToMatch = "/([A-Z][^\\s,.]+[.]?\\s[(]?)*(College|University|Institute|Law School|School of|Academy|Instituto|Universidade|Escola)[^,\\d]*(?=,|\\d)/";
+       // String patternToMatch = "(Institute|Instituto)\\s " ;
+       String patternToMatch = "/([A-Z][^\\s,.]+[.]?\\s[(]?)*(College|University|Institute|Law School|School of|Academy|Instituto|Universidade|Escola)[^,\\d]*(?=,|\\d)/";
 
         Pattern pattern = Pattern.compile(patternToMatch);
 

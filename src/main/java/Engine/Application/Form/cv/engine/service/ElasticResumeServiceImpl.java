@@ -20,4 +20,9 @@ public class ElasticResumeServiceImpl implements ElasticResumeService {
         return resumeRepository.findById(id).orElse(null);
     }
 
+    @Override
+    public Iterable<Resume> findAll() {
+        return resumeRepository.findAll();
+    }
+
 }

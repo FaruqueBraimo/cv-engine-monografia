@@ -226,4 +226,7 @@ public class ResumeService {
     }
 
 
+    public Iterable<Resume> getResume() {
+        return  elasticResumeService.findAll();
+    }
 }
