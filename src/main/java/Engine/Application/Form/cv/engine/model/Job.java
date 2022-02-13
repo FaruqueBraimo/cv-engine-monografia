@@ -1,32 +1,36 @@
 package Engine.Application.Form.cv.engine.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import Engine.Application.Form.cv.engine.util.Indice;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.persistence.*;
-import java.util.UUID;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Setting;
+import org.springframework.data.annotation.Id;
 
-@Entity
+import java.util.Date;
+
+
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
+@Document(indexName = Indice.JOB_INDEX)
+@Setting(settingPath = "static/es-settings.json")
 public class Job {
 
     @Id
-    @GeneratedValue
-    private UUID jobId;
+    @Field(type = FieldType.Keyword)
+    private String jobId;
+    @Field(type = FieldType.Text)
     private String title;
+    @Field(type = FieldType.Text)
     private String description;
-    private String JobStatus;
-    private String JobType;
-    private String salary;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference
-    private Category category;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference
-    private Company company;
+    @Field(type = FieldType.Text)
+    private String jobStatus;
+    @Field(type = FieldType.Date)
+    private Date createdAt;
 
 
 }
