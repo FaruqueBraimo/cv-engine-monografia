@@ -2,6 +2,7 @@ package Engine.Application.Form.cv.engine.resource;
 
 
 import Engine.Application.Form.cv.engine.message.ResponseMessage;
+import Engine.Application.Form.cv.engine.model.Job;
 import Engine.Application.Form.cv.engine.model.Resume;
 import Engine.Application.Form.cv.engine.service.ElasticResumeService;
 import Engine.Application.Form.cv.engine.service.ResumeService;
@@ -41,9 +42,8 @@ public class ResumeResource {
 
 
     @PostMapping("/resumes/upload")
-    public ResponseEntity<ResponseMessage> uploadFiles(@RequestParam("files") MultipartFile[] files ) {
+    public ResponseEntity<ResponseMessage> uploadFiles(@RequestParam("files") MultipartFile[] files , @RequestParam("job") String job) {
         String message = "";
-        String job = UUID.randomUUID().toString();
         try {
             List<String> fileNames = new ArrayList<>();
 
@@ -83,6 +83,9 @@ public class ResumeResource {
         return  ResponseEntity.ok().body(resumeService.getResume());
     }
 
-
+    @GetMapping("/resumes/job/{id}")
+    public ResponseEntity<Long> getResumeByJob(@RequestParam("job") String job) throws IOException {
+        return  ResponseEntity.ok().body(resumeService.countResumeByJob(job));
+    }
 
 }

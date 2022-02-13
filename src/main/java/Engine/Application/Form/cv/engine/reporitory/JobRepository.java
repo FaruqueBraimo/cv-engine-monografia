@@ -5,5 +5,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 
 public interface JobRepository extends ElasticsearchRepository<Job, String> {
-
+   Job findByJobId(String id);
 }

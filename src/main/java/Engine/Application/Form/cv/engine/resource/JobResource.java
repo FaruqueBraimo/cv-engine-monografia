@@ -32,6 +32,11 @@ public class JobResource {
     }
 
 
+    @GetMapping("/job/{id}")
+    public ResponseEntity<Job> getJob(@RequestParam String id) {
+        return  ResponseEntity.ok().body(jobService.findById(id));
+    }
+
 
     @PostMapping("/job/create")
     private ResponseEntity<ResponseMessage> saveJob(@RequestBody Job job) {
