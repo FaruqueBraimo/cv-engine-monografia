@@ -21,8 +21,8 @@ public class Company {
     private UUID companyId;
     private String companyName;
     private String description;
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Job> jobs;
+//    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+//    @JsonManagedReference
+//    private List<Job> jobs;
 
 }

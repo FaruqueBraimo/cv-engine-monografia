@@ -22,7 +22,7 @@ public class Category {
     private UUID categoryId;
     private String categoryName;
     private String description;
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Job> jobs;
+//    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+//    @JsonManagedReference
+//    private List<Job> jobs;
 }

@@ -78,5 +78,11 @@ public class ResumeResource {
                 .body(resource);
     }
 
+    @GetMapping("/resumes")
+    public ResponseEntity<Iterable<Resume>> getJobs() {
+        return  ResponseEntity.ok().body(resumeService.getResume());
+    }
+
+
 
 }

@@ -1,7 +1,6 @@
 package Engine.Application.Form.cv.engine.model;
 
 
-import com.algolia.search.javax.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +20,7 @@ public class Skills {
     @Column(name = "skillId")
     private UUID objectID;
     private String name;
-    @Nullable
+
     private String level;
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonBackReference

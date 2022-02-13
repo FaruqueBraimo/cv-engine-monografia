@@ -4,14 +4,11 @@ import Engine.Application.Form.cv.engine.model.Candidate;
 import Engine.Application.Form.cv.engine.model.Experience;
 import Engine.Application.Form.cv.engine.model.Skills;
 import Engine.Application.Form.cv.engine.resume.ResumeDatabase;
-import Engine.Application.Form.cv.engine.search.ArgoliaSerach;
 import Engine.Application.Form.cv.engine.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.lang.reflect.Array;
 import java.time.LocalDate;
@@ -28,10 +25,7 @@ public class CvEngineApplication {
 	}
 
 
-	@Bean
-	PasswordEncoder passwordEncoder(){
-		return  new BCryptPasswordEncoder();
-	}
+
 
 	@Bean
 	CommandLineRunner runner(UserService userService) {

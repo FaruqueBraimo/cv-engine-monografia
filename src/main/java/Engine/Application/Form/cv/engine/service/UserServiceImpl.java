@@ -6,11 +6,6 @@ import Engine.Application.Form.cv.engine.reporitory.RoleRepository;
 import Engine.Application.Form.cv.engine.reporitory.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,33 +17,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
 
     private final  UserRepository userRepository;
     private final RoleRepository roleRepository;
 
 
-    @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findByUsername(userName);
 
-        if (userEntity == null) {
-            log.info("user not found in database");
-        }
-        else {
-            log.info("user founded in database");
-
-
-        }
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-
-        userEntity.getRoles().forEach(role -> {
-
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-        });
-
-        return new User(userEntity.getUsername(), userEntity.getPassword(), authorities);
-    }
 
     @Override
     public UserEntity saveUser(UserEntity userEntity) {
