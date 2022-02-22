@@ -33,7 +33,7 @@ public class JobResource {
 
 
     @GetMapping("/job/{id}")
-    public ResponseEntity<Job> getJob(@RequestParam String id) {
+    public ResponseEntity<Job> getJob(@PathVariable  String id) {
         return  ResponseEntity.ok().body(jobService.findById(id));
     }
 
@@ -57,6 +57,7 @@ public class JobResource {
             message = e.getMessage();
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
         }
+
 
     }
 

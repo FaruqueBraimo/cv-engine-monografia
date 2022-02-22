@@ -41,8 +41,8 @@ public class ResumeResource {
     private final ElasticResumeService elasticResumeService;
 
 
-    @PostMapping("/resumes/upload")
-    public ResponseEntity<ResponseMessage> uploadFiles(@RequestParam("files") MultipartFile[] files , @RequestParam("job") String job) {
+    @PostMapping("/resumes/upload/{job}" )
+    public ResponseEntity<ResponseMessage> uploadFiles(@RequestParam("files") MultipartFile[] files , @PathVariable String job) {
         String message = "";
         try {
             List<String> fileNames = new ArrayList<>();
@@ -84,8 +84,8 @@ public class ResumeResource {
     }
 
     @GetMapping("/resumes/job/{id}")
-    public ResponseEntity<Long> getResumeByJob(@RequestParam("job") String job) throws IOException {
-        return  ResponseEntity.ok().body(resumeService.countResumeByJob(job));
+    public ResponseEntity<Long> getResumeByJob(@PathVariable String id) throws IOException {
+        return  ResponseEntity.ok().body(resumeService.countResumeByJob(id));
     }
 
 }
