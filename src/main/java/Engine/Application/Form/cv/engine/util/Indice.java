@@ -4,4 +4,6 @@ public final class Indice {
 
     public static final String  RESUME_INDEX = "resume";
     public static final String  JOB_INDEX = "job";
+    public static final String  CANDIDATE_INDEX = "candidate";
+
 }

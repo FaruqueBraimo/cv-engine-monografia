@@ -70,6 +70,7 @@ public class ResumeResource {
         HttpHeaders headers = new HttpHeaders();
         headers.add("content-disposition", "inline;filename=" + file.getName());
 
+//        C:\Users\Faruque Braimo\Documents\GitHub\cv-engine-monografia\resumes\1fbb8ccf-feed-4612-a1d2-3614f9dfae76\Faruque Braimo CV.pdf
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         return ResponseEntity.ok()
                 .headers(headers)

@@ -37,4 +37,11 @@ public class Resume {
     private Date createdAt;
     @Field(type = FieldType.Text)
     private String job;
+    @Field(type = FieldType.Text)
+    private String phoneNumber;
+    @Field(type = FieldType.Text)
+    private String email;
+
+
+
 }

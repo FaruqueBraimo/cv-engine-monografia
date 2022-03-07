@@ -41,6 +41,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -104,6 +106,9 @@ public class ResumeService {
                     .collect(Collectors.joining());
 
             LanguageIdentifier language = new LanguageIdentifier(content);
+            String candidatePhone = getNumber(content);
+            String candidateEmail = getEmail(content);
+
             String token_content = "";
 
 
@@ -114,7 +119,7 @@ public class ResumeService {
             }
 
             elasticResumeService.saveResume(new Resume(UUID.randomUUID().toString(), FilenameUtils.removeExtension(file.getName().toString()),
-                    file.getAbsolutePath(), token_content, getLanguageName(language.getLanguage()), pagesNumber, getmetadata(file), job));
+                    file.getAbsolutePath(), token_content, getLanguageName(language.getLanguage()), pagesNumber, getmetadata(file), job, candidatePhone, candidateEmail));
 
         } catch (IOException ioException) {
             ioException.printStackTrace();
@@ -209,7 +214,39 @@ public class ResumeService {
         Files.delete(root);
     }
 
+    public  String getNumber(String text) {
+        String internationalPattern = "(?:[0-9]\\s*?){6,14}[0-9]";
+        String localPattern = "([0-9]{3})\\)?[-.\\s*]?([0-9]{3})[-.\\s*]?([0-9]{3,5})$";
 
+        Pattern p
+                = Pattern.compile("(?:[0-9]\\s*?)[0-9]+(?:[0-9]\\s*?){6,14}[0-9]");
+
+        Pattern pattern = Pattern.compile(internationalPattern);
+
+        Matcher m = p.matcher(text);
+
+        while (m.find()) {
+            return m.group();
+        }
+        return "Nao encontrado";
+    }
+
+    public  String getEmail(String text) {
+        Pattern p
+                = Pattern.compile(
+                "[a-zA-Z0-9]"
+                        + "[a-zA-Z0-9_.]"
+                        + "*@[a-zA-Z0-9]"
+                        + "+([.][a-zA-Z]+)+");
+
+        Matcher m = p.matcher(text);
+
+        while (m.find()) {
+            return m.group();
+        }
+        return "Nao encontrado";
+
+    }
 
 
 
