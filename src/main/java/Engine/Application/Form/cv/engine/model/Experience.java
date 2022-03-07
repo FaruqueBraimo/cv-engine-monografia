@@ -25,7 +25,5 @@ public class Experience {
     private LocalDate endedAt;
     private String description;
     private boolean correntWork;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference
-    private Candidate candidate;
+
 }

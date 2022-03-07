@@ -22,8 +22,6 @@ public class Skills {
     private String name;
 
     private String level;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference
-    private Candidate candidate;
+
 
 }

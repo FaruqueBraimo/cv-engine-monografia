@@ -5,13 +5,20 @@
  */
 package Engine.Application.Form.cv.engine.model;
 
+import Engine.Application.Form.cv.engine.util.Indice;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Setting;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,31 +26,23 @@ import java.util.UUID;
  *
  * @author faruq
  */
-@Entity
+@AllArgsConstructor
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@Document(indexName = Indice.CANDIDATE_INDEX)
+@Setting(settingPath = "static/es-settings.json")
 public class Candidate {
 
     @Id
-    @GeneratedValue
-    @Column(name = "candidateId")
-    private UUID objectID ;
-    private String name;
-    private String last_name;
-    private LocalDate birth_date;
-    private String nacionality;
-    private String self_descrition;
-    private String user_id;
-    private String province;
-    @OneToMany(mappedBy = "candidate", fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Experience> experience;
-    @OneToMany(mappedBy = "candidate", fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Skills> skills;
+    @Field(type = FieldType.Keyword)
+    private String candidateId;
+    @Field(type = FieldType.Text)
+    private String nome;
+    @Field(type = FieldType.Text)
+    private String email;
+    @Field(type = FieldType.Text)
+    private String telefone;
+    @Field(type = FieldType.Text)
+    private String job;
 
-
-
-    
 }

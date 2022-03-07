@@ -6,19 +6,55 @@
 package Engine.Application.Form.cv.engine.resource;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import Engine.Application.Form.cv.engine.message.ResponseMessage;
+import Engine.Application.Form.cv.engine.model.Candidate;
+import Engine.Application.Form.cv.engine.model.Job;
+import Engine.Application.Form.cv.engine.service.CandidateService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.UUID;
 
 /**
  *
  * @author faruq
  */
 @RestController
-@RequestMapping("api/candidates")
+@RequestMapping(value = "api")
+@CrossOrigin("*")
+@RequiredArgsConstructor
 
 public class CandidateResouce {
 
-         
+    private final CandidateService candidateService;
+
+    @GetMapping("/candidate")
+    public ResponseEntity<Iterable<Candidate>> getJobs() {
+        return  ResponseEntity.ok().body(candidateService.getJobs());
+    }
+
+
+    @PostMapping("/candidate/create")
+    private ResponseEntity<ResponseMessage> saveJob(@RequestBody Candidate candidate) {
+        String message = "";
+        String jobId = UUID.randomUUID().toString();
+
+        try {
+            candidate.setCandidateId(jobId);
+            candidateService.saveJob(candidate);
+            message = "O candidato " + candidate.getNome()+ " foi adiciomnado" ;
+
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+        } catch (Exception e) {
+            message = e.getMessage();
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+        }
+
+
+    }
 
     
 }
