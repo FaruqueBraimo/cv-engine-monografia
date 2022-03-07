@@ -43,59 +43,6 @@ public class ResumeDatabase {
     static Path path;
 
 
-    public List<Resume> IndexFiles(MultipartFile multipartFile, String job) throws IOException {
-        path = Paths.get(currentWorkingDir.normalize().toString() + "/resumes/" + job + "/" + multipartFile.getOriginalFilename());
-        List<Resume> resumes = new ArrayList<Resume>();
-
-
-        try {
-            File file = new File(path.toString());
-            multipartFile.transferTo(file);
-
-            //Count Number pages
-            PdfReader document = new PdfReader(new FileInputStream(file));
-            int pagesNumber = document.getNumberOfPages();
-
-            // Detect Language
-
-            String content = new Tika().parseToString(file);
-
-
-            String target = Arrays.asList(content.split(" "))
-                    .stream()
-                    .filter(word -> !word.contains("http"))
-                    .filter(word -> !word.contains("www"))
-                    .map(word -> word + " ")
-                    .collect(Collectors.joining());
-
-
-            LanguageIdentifier language = new LanguageIdentifier(content);
-            String token_content = "";
-
-
-            for (String token : getResumeTokens(removeStopWords(target, language.getLanguage()))) {
-
-                String pattern = "[● \uF0B7 ^ _  * \uF03E]*";
-                token_content += token.replaceAll("g[0-9].*?\\b", "").replaceAll(pattern, "") + " ";
-            }
-
-            resumes.add(new Resume(UUID.randomUUID().toString(), FilenameUtils.removeExtension(file.getName().toString()),
-                    file.getAbsolutePath(), token_content, getLanguageName(language.getLanguage()), pagesNumber, getmetadata(file), job));
-
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-
-        } catch (TikaException tikaException) {
-            tikaException.printStackTrace();
-        } catch (ParseException parseException) {
-            parseException.printStackTrace();
-        } catch (SAXException saxException) {
-            saxException.printStackTrace();
-        }
-
-
-        return resumes;
-    }
 
 
     public List<Resume> loadResume(String job) throws IOException {
@@ -130,6 +77,8 @@ public class ResumeDatabase {
 
 
                         LanguageIdentifier language = new LanguageIdentifier(content);
+                        String candidatePhone = getNumber(content);
+                        String candidateEmail = getEmail(content);
                         String token_content = "";
 
 
@@ -140,7 +89,7 @@ public class ResumeDatabase {
                         }
 
                         resumes.add(new Resume(String.valueOf(count.getAndIncrement()), FilenameUtils.removeExtension(e.getFileName().toString()),
-                                e.toAbsolutePath().toString(), token_content, getLanguageName(language.getLanguage()), pagesNumber, getmetadata(file), job));
+                                e.toAbsolutePath().toString(), token_content, getLanguageName(language.getLanguage()), pagesNumber, getmetadata(file), job, candidatePhone, candidateEmail));
 
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
@@ -232,6 +181,35 @@ public class ResumeDatabase {
         }
         return result;
 
+    }
+    public  String getEmail(String content) {
+        String pattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Zaz0-9]+)*(\\.[A-Za-z]{2,})$";
+        Pattern p = Pattern.compile(content);
+        Matcher matcher = p.matcher(pattern);
+
+        if(matcher.matches()) {
+            return  content;
+        }
+        return "Nao encontrado";
+
+    }
+
+    public  String getNumber(String phoneNumber) {
+        String internationalPattern = "^\\+(?:[0-9]\\s*?){6,14}[0-9]$";
+        String localPattern = "^\\(?([0-9]{3})\\)?[-.\\s*]?([0-9]{3})[-.\\s*]?([0-9]{3,5})$";
+
+        Pattern pInternational = Pattern.compile(internationalPattern);
+        Pattern pLocal = Pattern.compile(localPattern);
+
+        Matcher mInternational = pInternational.matcher(phoneNumber);
+        Matcher mLocal = pLocal.matcher(phoneNumber);
+
+        if (mInternational.matches()) {
+            return phoneNumber;
+        } else if (mLocal.matches()) {
+            return phoneNumber;
+        }
+        return "Nao encontrado";
     }
 
     public static void main(String[] args) {
