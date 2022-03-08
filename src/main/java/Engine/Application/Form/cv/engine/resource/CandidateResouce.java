@@ -10,6 +10,8 @@ import Engine.Application.Form.cv.engine.message.ResponseMessage;
 import Engine.Application.Form.cv.engine.model.Candidate;
 import Engine.Application.Form.cv.engine.model.Job;
 import Engine.Application.Form.cv.engine.service.CandidateService;
+import Engine.Application.Form.cv.engine.service.ElasticResumeService;
+import Engine.Application.Form.cv.engine.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,21 +32,22 @@ import java.util.UUID;
 public class CandidateResouce {
 
     private final CandidateService candidateService;
+    private final ElasticResumeService elasticResumeService;
+
 
     @GetMapping("/candidate")
     public ResponseEntity<Iterable<Candidate>> getJobs() {
         return  ResponseEntity.ok().body(candidateService.getJobs());
     }
 
-
     @PostMapping("/candidate/create")
     private ResponseEntity<ResponseMessage> saveJob(@RequestBody Candidate candidate) {
         String message = "";
         String jobId = UUID.randomUUID().toString();
-
         try {
             candidate.setCandidateId(jobId);
             candidateService.saveJob(candidate);
+            elasticResumeService.delete(candidate.getResumeId());
             message = "O candidato " + candidate.getNome()+ " foi adiciomnado" ;
 
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));

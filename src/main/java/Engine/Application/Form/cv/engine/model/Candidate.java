@@ -44,5 +44,9 @@ public class Candidate {
     private String telefone;
     @Field(type = FieldType.Text)
     private String job;
+    @Transient
+    private String resumeId;
+
+
 
 }

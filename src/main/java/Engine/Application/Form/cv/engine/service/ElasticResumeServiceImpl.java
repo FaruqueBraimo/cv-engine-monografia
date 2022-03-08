@@ -6,6 +6,8 @@ import Engine.Application.Form.cv.engine.reporitory.ResumeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ElasticResumeServiceImpl implements ElasticResumeService {
@@ -18,6 +20,15 @@ public class ElasticResumeServiceImpl implements ElasticResumeService {
 
     public Resume findById(String id) {
         return resumeRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void delete(String id) {
+        Optional<Resume> resume = resumeRepository.findById(id);
+        if (resume.isPresent()) {
+        resumeRepository.delete(resume.get());
+
+        }
     }
 
     @Override
