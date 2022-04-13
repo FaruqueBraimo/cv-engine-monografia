@@ -66,7 +66,25 @@ public class ControllerTest {
     }
 
 
+    @Test
+    public void test() throws Exception {
 
+        Candidate candidate = Candidate.builder().
+                candidateId(UUID.randomUUID().toString())
+                .nome("Faruque")
+                .resumeId(UUID.randomUUID().toString())
+                .build();
+
+        Iterable<Candidate> candidateIterable = Collections.singleton(candidate);
+
+        when(service.getJobs()).thenReturn(candidateIterable);
+
+        this.mockMvc.perform(get("/api/candidate")
+                )
+                .andExpect(status().isOk()
+                )
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1));
+    }
 
     @Test
     public void createOrEditOrDeleteTaskShouldExecuteOperation() throws Exception {
