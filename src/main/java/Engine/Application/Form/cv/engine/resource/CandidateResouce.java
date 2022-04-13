@@ -15,6 +15,7 @@ import Engine.Application.Form.cv.engine.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -41,7 +42,9 @@ public class CandidateResouce {
     }
 
     @PostMapping("/candidate/create")
-    private ResponseEntity<ResponseMessage> saveJob(@RequestBody Candidate candidate) {
+    private ResponseEntity<ResponseMessage> saveJob(@RequestParam String candidate1, @RequestBody Candidate candidate) {
+
+        System.out.println(candidate1);
         String message = "";
         String jobId = UUID.randomUUID().toString();
         try {

@@ -8,6 +8,7 @@ package Engine.Application.Form.cv.engine.model;
 import Engine.Application.Form.cv.engine.util.Indice;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -31,6 +32,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Document(indexName = Indice.CANDIDATE_INDEX)
 @Setting(settingPath = "static/es-settings.json")
+@Builder
 public class Candidate {
 
     @Id
