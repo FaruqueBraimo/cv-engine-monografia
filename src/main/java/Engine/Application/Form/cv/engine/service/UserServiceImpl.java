@@ -19,46 +19,46 @@ import java.util.List;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    private final  UserRepository userRepository;
-    private final RoleRepository roleRepository;
-
-
-
-
-    @Override
-    public UserEntity saveUser(UserEntity userEntity) {
-     log.info("saving user{} to the database", userEntity.getUsername());
-    return userRepository.save(userEntity);
-
-    }
-
-    @Override
-    public Role saveRole(Role role) {
-        log.info("saving role{} to the database", role.getName());
-        return roleRepository.save(role);
-    }
-
-    @Override
-    public void addRoleToUser(String username, String roleName) {
-
-        log.info("Adding role{} to user{} the database", roleName, username);
-        UserEntity user = userRepository.findByUsername(username);
-        Role role = roleRepository.findByName(roleName);
-        user.getRoles().add(role);
-
-    }
-
-    @Override
-    public UserEntity getUser(String username) {
-        log.info("fetching user{}", username);
-        return userRepository.findByUsername(username);
-
-    }
-
-    @Override
-    public List<UserEntity> getUsers() {
-        log.info("fetching users");
-        return userRepository.findAll();
-    }
+//    private final  UserRepository userRepository;
+//    private final RoleRepository roleRepository;
+//
+//
+//
+//
+//    @Override
+//    public UserEntity saveUser(UserEntity userEntity) {
+//     log.info("saving user{} to the database", userEntity.getUsername());
+//    return userRepository.save(userEntity);
+//
+//    }
+//
+//    @Override
+//    public Role saveRole(Role role) {
+//        log.info("saving role{} to the database", role.getName());
+//        return roleRepository.save(role);
+//    }
+//
+//    @Override
+//    public void addRoleToUser(String username, String roleName) {
+//
+//        log.info("Adding role{} to user{} the database", roleName, username);
+//        UserEntity user = userRepository.findByUsername(username);
+//        Role role = roleRepository.findByName(roleName);
+//        user.getRoles().add(role);
+//
+//    }
+//
+//    @Override
+//    public UserEntity getUser(String username) {
+//        log.info("fetching user{}", username);
+//        return userRepository.findByUsername(username);
+//
+//    }
+//
+//    @Override
+//    public List<UserEntity> getUsers() {
+//        log.info("fetching users");
+//        return userRepository.findAll();
+//    }
 
 }

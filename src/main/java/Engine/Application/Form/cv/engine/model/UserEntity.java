@@ -1,30 +1,31 @@
 package Engine.Application.Form.cv.engine.model;
 
 
+import Engine.Application.Form.cv.engine.util.Indice;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Setting;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-
-@Entity
+@AllArgsConstructor
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-
+@Document(indexName = Indice.user_INDEX)
+@Setting(settingPath = "static/es-settings.json")
+@Builder
 public class UserEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID userId;
+    @Field(type = FieldType.Keyword)
+    private String id;
+    @Field(type = FieldType.Text)
     private String username;
+    @Field(type = FieldType.Text)
     private String password;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Role> roles = new ArrayList<>();
-
 
 }

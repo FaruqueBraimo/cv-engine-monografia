@@ -1,28 +1,30 @@
 package Engine.Application.Form.cv.engine.model;
 
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import Engine.Application.Form.cv.engine.util.Indice;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Setting;
 
-import javax.persistence.*;
-import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Data
 @AllArgsConstructor
+@Data
 @NoArgsConstructor
+@Document(indexName = Indice.COMPANY_INDEX)
+@Setting(settingPath = "static/es-settings.json")
 public class Company {
 
     @Id
-    @GeneratedValue
-    private UUID companyId;
+    @Field(type = FieldType.Keyword)
+    private String id;
+    @Field(type = FieldType.Text)
     private String companyName;
+    @Field(type = FieldType.Text)
     private String description;
-//    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
-//    @JsonManagedReference
-//    private List<Job> jobs;
-
 }

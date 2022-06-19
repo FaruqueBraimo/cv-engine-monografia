@@ -1,21 +1,10 @@
 package Engine.Application.Form.cv.engine;
 
-import Engine.Application.Form.cv.engine.model.Candidate;
-import Engine.Application.Form.cv.engine.model.Experience;
-import Engine.Application.Form.cv.engine.model.Skills;
-import Engine.Application.Form.cv.engine.resume.ResumeDatabase;
 import Engine.Application.Form.cv.engine.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import java.lang.reflect.Array;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 @SpringBootApplication
 public class CvEngineApplication {

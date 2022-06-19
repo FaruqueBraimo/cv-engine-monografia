@@ -26,6 +26,6 @@ public class RoleResource {
 
     @GetMapping("/roles")
     public List<Role> listCategories(){
-        return roleRepository.findAll();
+        return (List<Role>) roleRepository.findAll();
     }
 }
